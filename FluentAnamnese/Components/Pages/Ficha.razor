@@ -1,0 +1,209 @@
+﻿@page "/ficha"
+@using FluentAnamnese.Models
+@using System.Reflection
+@using System.Text
+@using Microsoft.SemanticKernel.ChatCompletion
+@inject IChatCompletionService chatCompletion
+@inject IToastService toastService
+@rendermode InteractiveServer
+
+<h2>Ficha de anamnese</h2>
+
+<EditForm Model="@fichaAnamnese" OnValidSubmit="@HandleValidSubmit" FormName="starship_fluent_entry" novalidate >
+    <DataAnnotationsValidator />
+    <FluentValidationSummary />
+
+    <div>
+        <FluentTextField Name="name" @bind-Value="fichaAnamnese.Nome" Label="Nome" Required style="width: 80%;" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Nome)" />
+    </div>
+    <div>
+        <FluentDatePicker Name="DataNascimento" @bind-Value="fichaAnamnese.DataNascimento" Label="DataNascimento" Required style="width: 30%;" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.DataNascimento)" />
+    </div>
+    <div>
+        <FluentTextField Name="Naturalidade" @bind-Value="fichaAnamnese.Naturalidade" Label="Naturalidade" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Naturalidade)" />
+    </div>
+    <div>
+        <FluentTextField Name="Nacionalidade" @bind-Value="fichaAnamnese.Nacionalidade" Label="Nacionalidade" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Nacionalidade)" />
+    </div>
+    <div>
+        <FluentTextField Name="Endereco" @bind-Value="fichaAnamnese.Endereco" Label="Endereco" Required style="width: 80%;" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Endereco)" />
+    </div>
+    <div>
+        <FluentTextField Name="Fone" @bind-Value="fichaAnamnese.Fone" Label="Fone" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Fone)" />
+    </div>
+    <div>
+        <FluentTextField Name="Email" @bind-Value="fichaAnamnese.Email" Label="Email" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Email)" />
+    </div>
+    <div>
+        <FluentNumberField Name="Peso" @bind-Value="fichaAnamnese.Peso" Label="Peso" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Peso)" />
+    </div>
+    <div>
+        <FluentNumberField Name="Estatura" @bind-Value="fichaAnamnese.Estatura" Label="Estatura" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Estatura)" />
+    </div>
+    <div>
+        <FluentTextArea Name="Objetivo" Resize="TextAreaResize.Both" Rows="3" Cols="80" @bind-Value="fichaAnamnese.Objetivo" Label="Objetivo" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Objetivo)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="PraticaAtividadeFisica" @bind-Value="fichaAnamnese.PraticaAtividadeFisica" Label="PraticaAtividadeFisica" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.PraticaAtividadeFisica)" />
+    </div>
+    <div>
+        <FluentNumberField Name="AnosPraticaAtividadeFisica" @bind-Value="fichaAnamnese.AnosPraticaAtividadeFisica" Label="AnosPraticaAtividadeFisica" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.AnosPraticaAtividadeFisica)" />
+    </div>
+    <div>
+        <FluentTextField Name="TipoAtividadeFisica" @bind-Value="fichaAnamnese.TipoAtividadeFisica" Label="TipoAtividadeFisica" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.TipoAtividadeFisica)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="JaPraticouAlgumaVez" @bind-Value="fichaAnamnese.JaPraticouAlgumaVez" Label="JaPraticouAlgumaVez" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.JaPraticouAlgumaVez)" />
+    </div>
+    <div>
+        <FluentNumberField Name="RefeicoesDia" @bind-Value="fichaAnamnese.RefeicoesDia" Label="RefeicoesDia" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.RefeicoesDia)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="DietaSuplementacao" @bind-Value="fichaAnamnese.DietaSuplementacao" Label="DietaSuplementacao" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.DietaSuplementacao)" />
+    </div>
+    <div>
+        <FluentTextField Name="TipoDietaSuplementacao" @bind-Value="fichaAnamnese.TipoDietaSuplementacao" Label="TipoDietaSuplementacao" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.TipoDietaSuplementacao)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="CasoObesidadeFamilia" @bind-Value="fichaAnamnese.CasoObesidadeFamilia" Label="CasoObesidadeFamilia" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.CasoObesidadeFamilia)" />
+    </div>
+    <div>
+        <FluentNumberField Name="HorasSonoNoite" @bind-Value="fichaAnamnese.HorasSonoNoite" Label="HorasSonoNoite" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.HorasSonoNoite)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="Fumante" @bind-Value="fichaAnamnese.Fumante" Label="Fumante" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.Fumante)" />
+    </div>
+    <div>
+        <FluentNumberField Name="QuantidadeCigarrosDia" @bind-Value="fichaAnamnese.QuantidadeCigarrosDia" Label="QuantidadeCigarrosDia" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.QuantidadeCigarrosDia)" />
+    </div>
+    <div>
+        <FluentNumberField Name="AnosParouFumar" @bind-Value="fichaAnamnese.AnosParouFumar" Label="AnosParouFumar" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.AnosParouFumar)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="ConsomeAlcool" @bind-Value="fichaAnamnese.ConsomeAlcool" Label="ConsomeAlcool" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.ConsomeAlcool)" />
+    </div>
+    <div>
+        <FluentTextField Name="TipoBebidaAlcolica" @bind-Value="fichaAnamnese.TipoBebidaAlcolica" Label="TipoBebidaAlcolica" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.TipoBebidaAlcolica)" />
+    </div>
+    <div>
+        <FluentNumberField Name="DiasConsumoAlcoolSemanal" @bind-Value="fichaAnamnese.DiasConsumoAlcoolSemanal" Label="DiasConsumoAlcoolSemanal" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.DiasConsumoAlcoolSemanal)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="JaLesionouPraticandoExecicios" @bind-Value="fichaAnamnese.JaLesionouPraticandoExecicios" Label="JaLesionouPraticandoExecicios" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.JaLesionouPraticandoExecicios)" />
+    </div>
+    <div>
+        <FluentTextField Name="LesoesExistentesDecorrentesDeExercicio" @bind-Value="fichaAnamnese.LesoesExistentesDecorrentesDeExercicio" Label="LesoesExistentesDecorrentesDeExercicio" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.LesoesExistentesDecorrentesDeExercicio)" />
+    </div>
+    <div>
+        <FluentCheckbox Name="UtilizaAlgumaMedicacao" @bind-Value="fichaAnamnese.UtilizaAlgumaMedicacao" Label="UtilizaAlgumaMedicacao" Required />
+        <FluentValidationMessage For="@(() => fichaAnamnese.UtilizaAlgumaMedicacao)" />
+    </div>
+    <div>
+        <FluentTextField Name="MedicamentosUtilizados" @bind-Value="fichaAnamnese.MedicamentosUtilizados" Label="MedicamentosUtilizados" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.MedicamentosUtilizados)" />
+    </div>
+    <div>
+        <FluentTextField Name="PatologiasQuejaTeveAnteriormente" @bind-Value="fichaAnamnese.PatologiasQuejaTeveAnteriormente" Label="PatologiasQuejaTeveAnteriormente" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.PatologiasQuejaTeveAnteriormente)" />
+    </div>
+    <div>
+        <FluentTextField Name="ObservacoesDoPacienteAoPersonal" @bind-Value="fichaAnamnese.ObservacoesDoPacienteAoPersonal" Label="ObservacoesDoPacienteAoPersonal" />
+        <FluentValidationMessage For="@(() => fichaAnamnese.ObservacoesDoPacienteAoPersonal)" />
+    </div>
+
+
+    <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Submit</FluentButton>
+
+</EditForm>
+<div>
+
+    <FluentTextArea Name="laudo" Resize="TextAreaResize.Both" Rows=15 Cols=180 @bind-Value="@resultado" Label="Laudo" ReadOnly="true" />
+    <FluentDivider />
+</div>
+
+@code {
+
+    [SupplyParameterFromForm]
+    private FichaAnamnese fichaAnamnese { get; set; } = new()
+        {
+            Nome = "Carlos Pereira Ribeiro Neuman",
+            DataNascimento = new DateTime(1991, 10, 1),
+            Naturalidade = "Curitiba",
+            Nacionalidade = "Brasileiro",
+            Endereco = "Rua Aldeia Bahia, 13 Centro",
+            Fone = "41224121111",
+            Email = "carlos@example.com",
+            Peso = 75,
+            Estatura = 178,
+            Objetivo = "Definição e ganho de massa muscular, condicionamento físico",
+            PraticaAtividadeFisica = true,
+            AnosPraticaAtividadeFisica = 4,
+            TipoAtividadeFisica = "Musculação",
+            JaPraticouAlgumaVez = true,
+            RefeicoesDia = 4,
+            DietaSuplementacao = true,
+            TipoDietaSuplementacao = "Whey e creatina",
+            CasoObesidadeFamilia = false,
+            HorasSonoNoite = 8,
+            Fumante = true,
+            QuantidadeCigarrosDia = 6,
+            AnosParouFumar = 0,
+            ConsomeAlcool = true,
+            TipoBebidaAlcolica = "Cerveja",
+            DiasConsumoAlcoolSemanal = 3,
+            JaLesionouPraticandoExecicios = false,
+            UtilizaAlgumaMedicacao = true,
+            MedicamentosUtilizados = "Venvanse, Certralina",
+        };
+
+    private string resultado = string.Empty;
+
+    private async Task HandleValidSubmit()
+    {
+        toastService.ShowSuccess("Sua ficha foi enviada para análise, por favor aguarde alguns segundos. Não saida da página.");
+
+        Type tipoObjeto = fichaAnamnese.GetType();
+        PropertyInfo[] propriedades = tipoObjeto.GetProperties();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.AppendLine("Ficha de anamnese:");
+        foreach (var propriedade in propriedades)
+        {
+            stringBuilder.AppendLine($"{propriedade.Name}:{propriedade.GetValue(fichaAnamnese, null)},");
+        }
+        ChatHistory chatHistory = new ChatHistory(@"Você é um personal trainer e recebe varias fichas de anamnese dos seus alunos com dados básicos sobre sua saude.
+Sua tarefa é fazer um laudo sobre a saude do aluno baseado na sua ficha de anamnese.");
+
+        chatHistory.AddUserMessage($"Faça a análise da ficha a seguir: {stringBuilder.ToString()}");
+        // Get the answer from the AI agent
+        var result = await chatCompletion.GetChatMessageContentAsync(chatHistory);
+        resultado = result.ToString();
+        ShouldRender();
+    }
+}

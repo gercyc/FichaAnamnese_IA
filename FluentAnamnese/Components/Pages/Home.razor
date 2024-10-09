@@ -1,0 +1,56 @@
+﻿@page "/"
+@rendermode InteractiveServer
+@using Microsoft.KernelMemory
+@using Microsoft.KernelMemory.AI
+@using Microsoft.SemanticKernel.ChatCompletion
+@inject IChatCompletionService chatCompletion
+@inject IKernelMemory memory
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, world!</h1>
+
+Welcome to your new Fluent Blazor app.
+<FluentSpacer />
+<FluentButton OnClick="ShowWelcome">Gerar boas vindas</FluentButton>
+
+<div>
+    @if (!string.IsNullOrEmpty(welcomeMessage))
+    {
+        <p>@welcomeMessage</p>
+    }
+</div>
+
+<FluentDivider />
+<div>
+    <FluentTextArea @bind-Value=fullText Resize="TextAreaResize.Both"></FluentTextArea>
+    <FluentTextArea @bind-Value=answer Resize="TextAreaResize.Both"></FluentTextArea>
+    <FluentButton OnClick="IngestTextAndSummary">Resumir</FluentButton>
+</div>
+
+@code
+{
+    string welcomeMessage = string.Empty, fullText = string.Empty, answer = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ShowWelcome();
+    }
+
+    private async Task ShowWelcome()
+    {
+        ChatHistory chatHistory = new ChatHistory("Diga uma mensagem de boas vindas ao usuário.");
+        chatHistory.AddUserMessage("Olá, como você está?");
+        // Get the answer from the AI agent
+        var result = await chatCompletion.GetChatMessageContentAsync(chatHistory);
+        welcomeMessage = result.ToString();
+        ShouldRender();
+    }
+    private async Task IngestTextAndSummary()
+    {
+        await memory.ImportTextAsync(fullText, "text001");
+        var result = await memory.AskAsync("Can you summarize this text?", filter: new MemoryFilter().ByDocument("text001"));
+        answer = result.Result;
+    }
+
+}
